@@ -1,8 +1,27 @@
-// Create a context Api
+import { ReactNode, createContext, useState } from "react";
 
-const UserProvider = () => {
+type UserContextType = {
+    access_token?: string | null,
+    setAccess_token: React.Dispatch<React.SetStateAction<string | null>>
+}
 
-    // Create Context Api here
+type UserProviderType = {
+    children: ReactNode
+}
+
+export const UserContext = createContext<UserContextType | null>(null)
+
+const UserProvider = ({ children }: UserProviderType) => {
+
+    const [access_token, setAccess_token] = useState<string | null>(null);
+
+    return(
+        <UserContext.Provider
+        value={{access_token, setAccess_token}}
+        >
+            {children}
+        </UserContext.Provider>
+    )
 }
 
 export default UserProvider;
