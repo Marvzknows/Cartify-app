@@ -1,23 +1,54 @@
 import { ReactNode, createContext, useState } from "react";
+import { Session } from 'inspector';
+import { useCookies } from "react-cookie";
 
 type UserContextType = {
-    access_token?: string | null,
-    setAccess_token: React.Dispatch<React.SetStateAction<string | null>>
+    session?: SessionType,
+    isLoggedin: boolean,
+    setIsLoggedIn:React.Dispatch<React.SetStateAction<boolean>>,
+    saveSession: (userCredential: Session) => void,
+    removeSession: () => void
 }
 
 type UserProviderType = {
     children: ReactNode
 }
 
-export const UserContext = createContext<UserContextType | null>(null)
+type SessionType = {
+    token?: string | null
+}
+
+export const UserContext = createContext<UserContextType | null>({
+    isLoggedin: false,
+    setIsLoggedIn: () => {},
+    saveSession: () => {},
+    removeSession: () => {}
+})
 
 const UserProvider = ({ children }: UserProviderType) => {
 
-    const [access_token, setAccess_token] = useState<string | null>(null);
+    const [cookies, setCookie, removeCookie] = useCookies(['session', 'isLoggedIn']);
+    const [isLoggedin, setIsLoggedIn] = useState(false);
+
+    const saveSession = (userCredential: Session) => {
+        setCookie('isLoggedIn', true);
+        setCookie('session', userCredential);
+    };
+
+    const removeSession = () => {
+        removeCookie('isLoggedIn');
+        removeCookie('session');
+    }
 
     return(
         <UserContext.Provider
-        value={{access_token, setAccess_token}}
+        value={{
+            session: cookies.session,
+            isLoggedin,
+            setIsLoggedIn,
+            saveSession,
+            removeSession
+        }}
         >
             {children}
         </UserContext.Provider>

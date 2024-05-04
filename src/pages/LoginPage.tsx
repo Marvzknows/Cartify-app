@@ -1,18 +1,28 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useContext, useEffect, useState } from "react";
 import logo from "../assets/react.svg";
 import CartButton from "../components/Button/Button";
 import { AxiosInstance } from "../API/BaseApi";
 import Toast from "../components/Toast/Toast";
+import { UserContext } from "../Context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
+
+  const context = useContext(UserContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    context?.removeSession();
+  },[])
 
   const [loginCredentials, setLoginCredentials] = useState({
     username: '',
     password: ''
   })
 
-  const [showToast, setShowToast] = useState(true);
+  const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [isloading, setIsLoading] = useState(false);
 
   // Handle Input Fields
   const onChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
@@ -42,12 +52,21 @@ const LoginPage = () => {
     }
     
     try{
-      const data = await AxiosInstance({}).post('/auth/login',loginCredentials);
-      console.log(data);
+      setIsLoading(true);
+      const response = await AxiosInstance({}).post('/auth/login',loginCredentials);
+      setIsLoading(false);
+      if(response.status && response.status === 200) {
+        context?.saveSession(response.data);
+        context?.setIsLoggedIn(true);
+        navigate('/products');
+        return;
+      }
+      
     }catch(er) {
       const error = er as Error;
       if(error) {
-        alert('Bad Request')
+        setShowToast(true);
+        setToastMessage('Account not found');
       }
     }
 
@@ -62,7 +81,7 @@ const LoginPage = () => {
   
   return (
     <div className="h-screen bg-light flex justify-center items-center">
-      {showToast && <Toast children={toastMessage} variant={'danger'} position={'top'} isShowToast={setShowToast} />}
+      {showToast && <Toast children={toastMessage} variant='danger' position={'top'} isShowToast={setShowToast} />}
       <div className="bg-lighter p-4 rounded-lg shadow-lg w-[90%] md:w-[340px]">
         <img className="m-auto mb-3" src={logo} width={40} />
 
@@ -98,7 +117,7 @@ const LoginPage = () => {
             />
           </div>
           <CartButton bgColor="success" size="xs">
-            Sign in
+            {isloading ? 'Signing in...' : 'Sign in'}
           </CartButton>
         </form>
       </div>

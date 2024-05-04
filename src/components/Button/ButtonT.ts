@@ -7,5 +7,5 @@ import { ReactNode } from "react"
     size: ButtonSizeType,
 }
 
-export type ButtonVariantType = "primary" | "secondary" | "success" | "danger";
+export type ButtonVariantType = "primary" | "secondary" | "success" | "danger" | "warning";
 export type ButtonSizeType = 'xs' | 'sm' | 'md' | 'lg' | 'xl';

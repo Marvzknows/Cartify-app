@@ -11,6 +11,7 @@ const CartButton = (props: ButtonsType & HTMLAttributes<HTMLButtonElement>) => {
     secondary: "bg-secondary text-white rounded-lg",
     success: "bg-success text-white rounded-lg",
     danger: "bg-danger text-white rounded-lg",
+    warning: "bg-warning text-dark rounded-lg",
   };
 
   const sizeObj = {
@@ -31,7 +32,7 @@ const CartButton = (props: ButtonsType & HTMLAttributes<HTMLButtonElement>) => {
     ${btnVariant ?? 'bg-primary text-white px-3 py-2 text-xs font-medium text-center rounded-lg'}
     ${btnSize ?? 'text-sm'}
     ${otherProps}
-    flex justify-center items-center gap-1
+    flex justify-center items-center gap-1 hover:bg-successlight
     `}
     {...otherProps}
     >

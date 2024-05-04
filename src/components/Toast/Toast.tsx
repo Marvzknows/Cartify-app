@@ -3,7 +3,7 @@ import { IoClose } from "react-icons/io5";
 
 type CartToastTypes = {
     children: ReactNode,
-    variant: 'success' | 'danger' | 'warning',
+    variant: 'success' | 'danger' | 'warning' | 'primary',
     position: 'center' |'topleft' | 'topright' | 'top' | 'bottomleft' | 'bottomright' | 'bottom',
     isShowToast: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -32,13 +32,14 @@ const CartToast = (props:CartToastTypes) => {
     }
 
     const positionClass = position ? toastPostionObj[position.toLowerCase()] : toastPostionObj.center;
+    const hoverColor = `bg-${variant.toLowerCase()}light`;
  
     return(
         <>
-            <div className={`${positionClass} w-64 bg-${variant.toLowerCase()} px-3 py-2 rounded-md shadow-lg hover:bg-${variant.toLowerCase()}light`}>
+            <div className={`${positionClass} w-64 bg-${variant.toLowerCase()} px-3 py-2 rounded-md shadow-lg cursor-pointer hover:${hoverColor}`}>
                 <div className={`flex justify-between items ${variant.toLocaleLowerCase() === 'warning' ? 'text-dark' : 'text-slate-100'} font-normal text-xs`}>
                     {children}
-                    <IoClose onClick={() => (isShowToast((prev) => (prev = false)))} className="font-semibold cursor-pointer hover:text-dark" />
+                    <IoClose onClick={() => (isShowToast(false))} className="font-semibold cursor-pointer hover:text-dark" />
                 </div>
             </div>
         </>

@@ -2,16 +2,17 @@
 
 import { useContext } from "react";
 import { UserContext } from "../../Context/UserContext";
+import PageLayout from "../../components/Layout/PageLayout";
 
 const ProductsPage = () => {
 
-    const token = useContext(UserContext)
-
+    const context = useContext(UserContext)
+    console.log(context?.session?.token)
+    console.log(context?.isLoggedin)
     return(
-        <div>
-            products page
-            token: <small>{token?.access_token}</small>
-        </div>
+        <PageLayout>
+            <small>Search component</small>
+        </PageLayout>
     )
 }
 

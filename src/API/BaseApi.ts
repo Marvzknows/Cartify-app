@@ -1,4 +1,4 @@
-import axios, { AxiosInstance as Axios, AxiosError } from 'axios'
+import axios, { AxiosInstance as Axios } from 'axios'
 
 type AxiosInstanceType = {
     token?: string,
