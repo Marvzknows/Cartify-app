@@ -1,7 +1,8 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import logo from "../assets/react.svg";
 import CartButton from "../components/Button/Button";
 import { AxiosInstance } from "../API/BaseApi";
+import Toast from "../components/Toast/Toast";
 
 const LoginPage = () => {
 
@@ -9,6 +10,9 @@ const LoginPage = () => {
     username: '',
     password: ''
   })
+
+  const [showToast, setShowToast] = useState(true);
+  const [toastMessage, setToastMessage] = useState('');
 
   // Handle Input Fields
   const onChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
@@ -32,7 +36,9 @@ const LoginPage = () => {
 
     const {username, password} = loginCredentials;
     if(username.trim() === '' || password.trim() === '') {
-      return alert('invalid')
+      setShowToast(true);
+      setToastMessage('Invalid Credentials');
+      return;
     }
     
     try{
@@ -46,9 +52,17 @@ const LoginPage = () => {
     }
 
   }
+
+  // Hide Toast after 3sec
+  useEffect(() => {
+    setTimeout(() => {
+      showToast && setShowToast(false);
+    }, 3000);
+  },[showToast])
   
   return (
     <div className="h-screen bg-light flex justify-center items-center">
+      {showToast && <Toast children={toastMessage} variant={'danger'} position={'top'} isShowToast={setShowToast} />}
       <div className="bg-lighter p-4 rounded-lg shadow-lg w-[90%] md:w-[340px]">
         <img className="m-auto mb-3" src={logo} width={40} />
 
