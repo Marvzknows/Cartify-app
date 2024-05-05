@@ -12,9 +12,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<LoginPage />}/>
-          <Route element={<ProtectedRoute />}>
+          {/* <Route element={<ProtectedRoute />}> */}
             <Route path='products' element={<ProductsPage />} />
-          </Route>
+          {/* </Route> */}
         </Routes>
       </BrowserRouter>
     </UserProvider>
