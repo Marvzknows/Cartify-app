@@ -7,8 +7,8 @@ type PageLayoutType = {
 const PageLayout = ({ children }: PageLayoutType) => {
 
     return(
-        <div className="bg-light h-screen flex justify-center items-center flex-col px-4 py-4 shadow-2xl w-screen">
-            <div className="bg-lighter rounded-lg p-4 h-full w-full sm:w-full md:w-[80%]">
+        <div className="bg-light flex items-center flex-col w-full min-h-screen px-4 py-4 shadow-2xl">
+            <div className="bg-lighter rounded-lg p-4 w-full sm:w-full md:w-[80%]">
                 {children}
             </div>
         </div>
