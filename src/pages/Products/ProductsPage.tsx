@@ -18,7 +18,7 @@ const ProductsPage = () => {
 //   console.log(context?.isLoggedin);
 
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [showCart, setShowCart] = useState(true);
+  const [showCart, setShowCart] = useState(false);
 
   const handleProfileDropdown = () => {
     setShowProfileDropdown(!showProfileDropdown);
@@ -34,7 +34,7 @@ const ProductsPage = () => {
 
   return (
     <>
-        {showCart && <Cart onClickCart={onClickCart}/>}
+        <Cart onClickCart={onClickCart} showCart={showCart}/>
         <PageLayout>
         <div className="flex justify-end gap-2 items-center">
             <InputField type="text" placeholder="Search" icon={<IoIosSearch />} />

@@ -29,6 +29,7 @@ const Card = () => {
                 <p className="text-slate-800 text-md font-medium text-start underline w-full">$109.95</p>
                 <button className="bg-warning w-full flex justify-center items-center rounded-lg hover:bg-warninglight">
                     <TbShoppingCartPlus />
+                    <p className="text-xs mx-1 font-medium">Add to Cart</p>
                 </button>
             </div>
         </div>
@@ -56,7 +57,8 @@ const Card = () => {
             <div className="flex justify-between p-2.5">
                 <p className="text-slate-800 text-md font-medium text-start underline w-full">$109.95</p>
                 <button className="bg-warning w-full flex justify-center items-center rounded-lg hover:bg-warninglight">
-                    <TbShoppingCartPlus />
+                    <TbShoppingCartPlus /> 
+                    <p className="text-xs mx-1 font-medium">Add to Cart</p>
                 </button>
             </div>
         </div>
