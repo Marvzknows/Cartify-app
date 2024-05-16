@@ -11,14 +11,39 @@ import Card from "../../components/Cards/Card";
 import { TbShoppingCartPlus } from "react-icons/tb";
 import AccountDropdown from "../../components/Dropdown/AccountDropdown";
 import Cart from "../Cart/Cart";
+import { BaseApi } from "../../API/BaseApi";
+import Pagination from "../../components/Pagination/Pagination";
+
+type CardsType = {
+  id: number,
+  title: string,
+  price: number,
+  category: string,
+  description: string,
+  image: string,
+  rating: {
+    count: number,
+    rate: number,
+  }
+}
 
 const ProductsPage = () => {
   const context = useContext(UserContext);
-//   console.log(context?.session?.token);
-//   console.log(context?.isLoggedin);
 
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showCart, setShowCart] = useState(false);
+  const [items, setItems] = useState<CardsType[] | []>([]);
+  const [dataIsReady, setDataIsReady] = useState(false); // Counter for which Function to invoke in useeffect
+
+  const [itemsPerPage, setItemsPerPage] = useState<CardsType[] | []>([]);
+  const [itemsFirstCount, setItemsFirstCount] = useState(0);
+  const [itemsLastCount, setItemsLastCount] = useState(4); // gmaitin sa pagination pag mag click ng page number or next page (by 4 lang ang items)
+  const [itemsLength, setItemsLength] = useState(0); // gano karami overall yung data/items
+
+  const [disablePaginationButton, setDisablePaginationButton] = useState({
+    nextBtn: false,
+    prevBtn: false
+  })
 
   const handleProfileDropdown = () => {
     setShowProfileDropdown(!showProfileDropdown);
@@ -28,59 +53,157 @@ const ProductsPage = () => {
     setShowCart(!showCart);
   };
 
+  const getAllProducts = async() => {
+    // console.log('itemsFirstCount', itemsFirstCount);
+    // console.log('itemsLastCount', itemsLastCount);
+    
+    if(!context?.session?.token) return
+
+    try {
+      const response = await BaseApi({token: context.session.token}).get('/products');
+      if(response.data === null || !response.data) {
+        return setItems([]);
+      }
+
+      setDataIsReady(true);
+      const data = response.data;
+      setItemsLength(data.length);
+      setItems(data);
+      setItemsPerPage(data.slice(itemsFirstCount,itemsLastCount));
+
+    }catch(error) {
+      console.log(error)
+    }
+
+  }
+
+  const nextPage = () => {
+    if(itemsFirstCount + 4 === itemsLength) {
+      // Disable or Hide the Next Button
+      setDisablePaginationButton((prev) => ({...prev, nextBtn: true}));
+      console.log('Already reached Last page');
+    }else {
+      if( disablePaginationButton.nextBtn === true || disablePaginationButton.prevBtn === true) {
+        setDisablePaginationButton({nextBtn: false, prevBtn: false});
+      }
+      setItemsFirstCount((prev) => (prev + 4))
+      setItemsLastCount((prev) => (prev + 4))
+    }
+    
+  }
+
+  const prevPage = () => {
+    if(itemsFirstCount <= 0) {
+      // Disable or Hide the Prev Button
+      setDisablePaginationButton((prev) => ({...prev, prevBtn: true}));
+      console.log('Already reached First page');
+    }else {
+      if( disablePaginationButton.nextBtn === true || disablePaginationButton.prevBtn === true) {
+        setDisablePaginationButton({nextBtn: false, prevBtn: false});
+      }      
+      setItemsFirstCount((prev) => (prev - 4))
+      setItemsLastCount((prev) => (prev - 4))
+    }
+    
+  }
+
+  const handlePagination = () => {
+    // console.log('items', items)
+    // console.log('Items Per page', itemsPerPage);
+    setItemsPerPage(items.slice(itemsFirstCount,itemsLastCount));
+  }
+
   useEffect(() => {
     showCart ? document.body.style.overflow = 'hidden' : document.body.style.overflow = '';
   }, [showCart])
 
+  useEffect(() => {
+    console.log('itemsLength', itemsLength);
+    console.log('itemsFirstCount',itemsFirstCount);
+    console.log('itemsLastCount', itemsLastCount);
+
+    if(!dataIsReady) {
+      getAllProducts();
+      return;
+    }
+    
+    if(dataIsReady) {
+      handlePagination();
+      return;
+    }
+    
+  },[itemsFirstCount,itemsLastCount])
+
   return (
     <>
-        <Cart onClickCart={onClickCart} showCart={showCart}/>
-        <PageLayout>
+      <Cart onClickCart={onClickCart} showCart={showCart} />
+      <PageLayout>
+
         <div className="flex justify-end gap-2 items-center">
-            <InputField type="text" placeholder="Search" icon={<IoIosSearch />} />
-            <div className="relative">
+          <InputField type="text" placeholder="Search" icon={<IoIosSearch />} />
+          <div className="relative">
             <img
-                onClick={handleProfileDropdown}
-                className="rounded-2xl cursor-pointer"
-                src={profileIcon}
-                width={30}
+              onClick={handleProfileDropdown}
+              className="rounded-2xl cursor-pointer"
+              src={profileIcon}
+              width={30}
             />
             {showProfileDropdown && (
-                <div className="absolute top-[35px] right-0 md:left-0">
+              <div className="absolute top-[35px] right-0 md:left-0">
                 <AccountDropdown />
-                </div>
+              </div>
             )}
-            </div>
-            <small
+          </div>
+          <small
             onClick={handleProfileDropdown}
             className="hidden cursor-pointer hover:text-gray-400 md:block"
-            >
+          >
             Username
-            </small>
-            <div className="border border-slate-400 rounded-3xl py-3 md:py-2"></div>
-            <button className="relative p-3.5 overflow-hidden">
+          </small>
+          <div className="border border-slate-400 rounded-3xl py-3 md:py-2"></div>
+          <button className="relative p-3.5 overflow-hidden">
             <div className="absolute top-0 right-0 bg-danger font-semibold text-white rounded-full w-5 h-4 text-[10px] flex items-center justify-center">
-                10
+              10
             </div>
             <TbShoppingCartPlus
-                onClick={onClickCart}
-                className="text-lg transition-transform duration-300 hover:scale-110"
+              onClick={onClickCart}
+              className="text-lg transition-transform duration-300 hover:scale-110"
             />
-            </button>
+          </button>
         </div>
         <div className="rounded-2xl mx-auto mt-5 shadow-xl md:h-[320px] w-full overflow-hidden">
-            <img
+          <img
             className="object-cover object-center w-full h-full"
             src={bannerImage}
-            />
+          />
         </div>
 
         <Categories />
 
         <div className="products-cards-container mt-3">
-            <Card />
+          {itemsPerPage &&
+            itemsPerPage.map((item) => (
+              <Card
+                key={item.id}
+                id={item.id}
+                title={item.title}
+                price={item.price}
+                category={item.category}
+                description={item.description}
+                image={item.image}
+                rating={item.rating.rate}
+              />
+            ))}
         </div>
-        </PageLayout>
+
+        {/* <Button onClick={nextPage} bgColor="danger" size={"xs"}>Next Page</Button> */}
+        <Pagination
+          nextPage={nextPage}
+          prevPage={prevPage}
+          itemsLength={itemsLength}
+          disablePaginationButton={disablePaginationButton}
+        />
+      </PageLayout>
     </>
   );
 };
