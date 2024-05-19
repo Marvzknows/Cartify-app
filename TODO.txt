@@ -1,4 +1,5 @@
 TODO:
+-> ALISING NALNAG PAGE NUMBER, NEXT AT PREV PAGE NLAANG 
 -> products page design, nasa assets uing layout
 -> fetch ang categories sa mga categories button
 -> by default naka display all ang categories

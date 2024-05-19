@@ -36,6 +36,7 @@ const ProductsPage = () => {
   const [dataIsReady, setDataIsReady] = useState(false); // Counter for which Function to invoke in useeffect
 
   const [itemsPerPage, setItemsPerPage] = useState<CardsType[] | []>([]);
+  const [curentPage, setCurrentPage] = useState(1);
   const [itemsFirstCount, setItemsFirstCount] = useState(0);
   const [itemsLastCount, setItemsLastCount] = useState(4); // gmaitin sa pagination pag mag click ng page number or next page (by 4 lang ang items)
   const [itemsLength, setItemsLength] = useState(0); // gano karami overall yung data/items
@@ -54,8 +55,6 @@ const ProductsPage = () => {
   };
 
   const getAllProducts = async() => {
-    // console.log('itemsFirstCount', itemsFirstCount);
-    // console.log('itemsLastCount', itemsLastCount);
     
     if(!context?.session?.token) return
 
@@ -86,6 +85,7 @@ const ProductsPage = () => {
       if( disablePaginationButton.nextBtn === true || disablePaginationButton.prevBtn === true) {
         setDisablePaginationButton({nextBtn: false, prevBtn: false});
       }
+      setCurrentPage((prev) => (prev + 1));
       setItemsFirstCount((prev) => (prev + 4))
       setItemsLastCount((prev) => (prev + 4))
     }
@@ -101,6 +101,7 @@ const ProductsPage = () => {
       if( disablePaginationButton.nextBtn === true || disablePaginationButton.prevBtn === true) {
         setDisablePaginationButton({nextBtn: false, prevBtn: false});
       }      
+      setCurrentPage((prev) => (prev - 1));
       setItemsFirstCount((prev) => (prev - 4))
       setItemsLastCount((prev) => (prev - 4))
     }
@@ -109,18 +110,30 @@ const ProductsPage = () => {
 
   const handlePagination = () => {
     // console.log('items', items)
-    // console.log('Items Per page', itemsPerPage);
+    console.log('Items Per page', itemsPerPage);
     setItemsPerPage(items.slice(itemsFirstCount,itemsLastCount));
   }
+
+  const NvigatePageNumber = (buttonId: number) => {
+   
+    const pageNumber = buttonId - 1;
+    let groups = [];
+    let groupSize = Math.ceil(items.length / 4) - 1;
+
+    for (let i = 0; i <= 4; i++) { // 0, 1, 2
+      groups.push(items.slice(i * groupSize, (i + 1) * groupSize)); // 0 - 5, 5 - 10
+    }
+
+    setCurrentPage(pageNumber + 1);
+    setItemsPerPage(groups[pageNumber]);
+    
+}
 
   useEffect(() => {
     showCart ? document.body.style.overflow = 'hidden' : document.body.style.overflow = '';
   }, [showCart])
 
   useEffect(() => {
-    console.log('itemsLength', itemsLength);
-    console.log('itemsFirstCount',itemsFirstCount);
-    console.log('itemsLastCount', itemsLastCount);
 
     if(!dataIsReady) {
       getAllProducts();
@@ -132,7 +145,7 @@ const ProductsPage = () => {
       return;
     }
     
-  },[itemsFirstCount,itemsLastCount])
+  },[itemsFirstCount,itemsLastCount, dataIsReady])
 
   return (
     <>
@@ -198,10 +211,13 @@ const ProductsPage = () => {
 
         {/* <Button onClick={nextPage} bgColor="danger" size={"xs"}>Next Page</Button> */}
         <Pagination
+          setCurrentPage={setCurrentPage}
+          curentPage={curentPage}
           nextPage={nextPage}
           prevPage={prevPage}
           itemsLength={itemsLength}
           disablePaginationButton={disablePaginationButton}
+          NvigatePageNumber={NvigatePageNumber}
         />
       </PageLayout>
     </>
