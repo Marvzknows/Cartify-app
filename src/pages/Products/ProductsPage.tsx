@@ -32,7 +32,7 @@ const ProductsPage = () => {
 
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showCart, setShowCart] = useState(false);
-  const [items, setItems] = useState<CardsType[] | []>([]);
+  const [items, setItems] = useState<CardsType[] | []>([]); // OverAll items
   const [dataIsReady, setDataIsReady] = useState(false); // Counter for which Function to invoke in useeffect
 
   const [itemsPerPage, setItemsPerPage] = useState<CardsType[] | []>([]);
@@ -65,10 +65,15 @@ const ProductsPage = () => {
       }
 
       setDataIsReady(true);
+      setDisablePaginationButton({nextBtn: false, prevBtn: false});
+      setCurrentPage(1);
       const data = response.data;
       setItemsLength(data.length);
       setItems(data);
-      setItemsPerPage(data.slice(itemsFirstCount,itemsLastCount));
+      setItemsPerPage(data.slice(0,4)); // Display the first page of the rendered itemsPerpage
+      // Reset the counter for slicing pagination (handlePagination);
+      setItemsFirstCount(0);
+      setItemsLastCount(4);
 
     }catch(error) {
       console.log(error)
@@ -109,25 +114,35 @@ const ProductsPage = () => {
   }
 
   const handlePagination = () => {
-    // console.log('items', items)
-    console.log('Items Per page', itemsPerPage);
     setItemsPerPage(items.slice(itemsFirstCount,itemsLastCount));
   }
 
-  const NvigatePageNumber = (buttonId: number) => {
-   
-    const pageNumber = buttonId - 1;
-    let groups = [];
-    let groupSize = Math.ceil(items.length / 4) - 1;
+ const getProductsFromCategory = async(categoryName: string) => {
 
-    for (let i = 0; i <= 4; i++) { // 0, 1, 2
-      groups.push(items.slice(i * groupSize, (i + 1) * groupSize)); // 0 - 5, 5 - 10
+  if(!context?.session?.token) return
+
+  try {
+    const response = await BaseApi({token: context.session.token}).get(`/products/category/${categoryName}`);
+    if(response.data === null || !response.data) {
+      return setItems([]);
     }
 
-    setCurrentPage(pageNumber + 1);
-    setItemsPerPage(groups[pageNumber]);
-    
-}
+    setDataIsReady(true);
+    setDisablePaginationButton({nextBtn: false, prevBtn: false});
+    setCurrentPage(1);
+    const data = response.data;
+    setItemsLength(data.length);
+    setItems(data);
+    setItemsPerPage(data.slice(0,4));  // Display the first page of the rendered itemsPerpage
+    // Reset the counter for slicing pagination (handlePagination)
+    setItemsFirstCount(0);
+    setItemsLastCount(4);
+
+  }catch(err) {
+    console.log(err)
+  }
+
+ }
 
   useEffect(() => {
     showCart ? document.body.style.overflow = 'hidden' : document.body.style.overflow = '';
@@ -191,7 +206,10 @@ const ProductsPage = () => {
           />
         </div>
 
-        <Categories />
+        <Categories
+          getProductsFromCategory={getProductsFromCategory}
+          getAllProducts={getAllProducts}
+        />
 
         <div className="products-cards-container mt-3">
           {itemsPerPage &&
@@ -209,15 +227,13 @@ const ProductsPage = () => {
             ))}
         </div>
 
-        {/* <Button onClick={nextPage} bgColor="danger" size={"xs"}>Next Page</Button> */}
         <Pagination
-          setCurrentPage={setCurrentPage}
           curentPage={curentPage}
           nextPage={nextPage}
           prevPage={prevPage}
           itemsLength={itemsLength}
           disablePaginationButton={disablePaginationButton}
-          NvigatePageNumber={NvigatePageNumber}
+          setDisablePaginationButton={setDisablePaginationButton}
         />
       </PageLayout>
     </>

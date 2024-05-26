@@ -1,9 +1,8 @@
 TODO:
--> ALISING NALNAG PAGE NUMBER, NEXT AT PREV PAGE NLAANG 
+-> Pag lagay ng fetch function sa categories buttons
 -> products page design, nasa assets uing layout
 -> fetch ang categories sa mga categories button
--> by default naka display all ang categories
--> Gawa pagination na ang limit ay 5 item per page
+
 
 ENHANCEMENT:
 -> i useMemo ung sa pag click ng buttons sa i-try categories
