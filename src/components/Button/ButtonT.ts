@@ -1,7 +1,7 @@
 import { ReactNode } from "react"
 
  export type ButtonsType = {
-    children: string,
+    children: string | ReactNode,
     bgColor?: ButtonVariantType,
     icon?: ReactNode,
     size: ButtonSizeType,

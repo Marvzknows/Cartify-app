@@ -23,3 +23,20 @@ export const AxiosInstance = (props:AxiosInstanceType): Axios => {
 
     return instance;
 }
+
+export const BaseApi = (props:AxiosInstanceType): Axios => {
+    
+    const { token, params } = props;
+
+    const instance = axios.create({
+        baseURL: 'https://fakestoreapi.com',
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+        params: {
+            limit: params?.limit // limit
+        }
+    })
+
+    return instance;
+}
