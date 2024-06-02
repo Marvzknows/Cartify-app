@@ -13,6 +13,8 @@ import AccountDropdown from "../../components/Dropdown/AccountDropdown";
 import Cart from "../Cart/Cart";
 import { BaseApi } from "../../API/BaseApi";
 import Pagination from "../../components/Pagination/Pagination";
+import axios from 'axios';
+import { CartItemsTypes } from "../../Types/CartItemsT";
 
 type CardsType = {
   id: number,
@@ -41,10 +43,12 @@ const ProductsPage = () => {
   const [itemsLastCount, setItemsLastCount] = useState(4); // gmaitin sa pagination pag mag click ng page number or next page (by 4 lang ang items)
   const [itemsLength, setItemsLength] = useState(0); // gano karami overall yung data/items
 
+  const [cartitems, setCartItems] = useState<CartItemsTypes[] | null>(null); // carts item lists
+
   const [disablePaginationButton, setDisablePaginationButton] = useState({
     nextBtn: false,
     prevBtn: false
-  })
+  });
 
   const handleProfileDropdown = () => {
     setShowProfileDropdown(!showProfileDropdown);
@@ -54,12 +58,11 @@ const ProductsPage = () => {
     setShowCart(!showCart);
   };
 
-  const getAllProducts = async() => {
-    
-    if(!context?.session?.token) return
+  const getAllProducts = async (signal: AbortSignal) => {
+    if(!context?.session?.token) return;
 
     try {
-      const response = await BaseApi({token: context.session.token}).get('/products');
+      const response = await BaseApi({token: context.session.token, signal}).get('/products');
       if(response.data === null || !response.data) {
         return setItems([]);
       }
@@ -75,10 +78,13 @@ const ProductsPage = () => {
       setItemsFirstCount(0);
       setItemsLastCount(4);
 
-    }catch(error) {
-      console.log(error)
+    } catch(error: unknown) {
+      if (axios.isAxiosError(error) && error.name !== 'AbortError') {
+        console.log(error);
+      } else {
+        console.error('Unexpected error:', error);
+      }
     }
-
   }
 
   const nextPage = () => {
@@ -86,15 +92,14 @@ const ProductsPage = () => {
       // Disable or Hide the Next Button
       setDisablePaginationButton((prev) => ({...prev, nextBtn: true}));
       console.log('Already reached Last page');
-    }else {
-      if( disablePaginationButton.nextBtn === true || disablePaginationButton.prevBtn === true) {
+    } else {
+      if(disablePaginationButton.nextBtn === true || disablePaginationButton.prevBtn === true) {
         setDisablePaginationButton({nextBtn: false, prevBtn: false});
       }
       setCurrentPage((prev) => (prev + 1));
-      setItemsFirstCount((prev) => (prev + 4))
-      setItemsLastCount((prev) => (prev + 4))
+      setItemsFirstCount((prev) => (prev + 4));
+      setItemsLastCount((prev) => (prev + 4));
     }
-    
   }
 
   const prevPage = () => {
@@ -102,65 +107,72 @@ const ProductsPage = () => {
       // Disable or Hide the Prev Button
       setDisablePaginationButton((prev) => ({...prev, prevBtn: true}));
       console.log('Already reached First page');
-    }else {
-      if( disablePaginationButton.nextBtn === true || disablePaginationButton.prevBtn === true) {
+    } else {
+      if(disablePaginationButton.nextBtn === true || disablePaginationButton.prevBtn === true) {
         setDisablePaginationButton({nextBtn: false, prevBtn: false});
       }      
       setCurrentPage((prev) => (prev - 1));
-      setItemsFirstCount((prev) => (prev - 4))
-      setItemsLastCount((prev) => (prev - 4))
+      setItemsFirstCount((prev) => (prev - 4));
+      setItemsLastCount((prev) => (prev - 4));
     }
-    
   }
 
   const handlePagination = () => {
-    setItemsPerPage(items.slice(itemsFirstCount,itemsLastCount));
+    setItemsPerPage(items.slice(itemsFirstCount, itemsLastCount));
   }
 
- const getProductsFromCategory = async(categoryName: string) => {
+  const getProductsFromCategory = async (categoryName: string, signal: AbortSignal) => {
+    if(!context?.session?.token) return;
 
-  if(!context?.session?.token) return
+    try {
+      const response = await BaseApi({token: context.session.token, signal}).get(`/products/category/${categoryName}`);
+      if(response.data === null || !response.data) {
+        return setItems([]);
+      }
 
-  try {
-    const response = await BaseApi({token: context.session.token}).get(`/products/category/${categoryName}`);
-    if(response.data === null || !response.data) {
-      return setItems([]);
+      setDataIsReady(true);
+      setDisablePaginationButton({nextBtn: false, prevBtn: false});
+      setCurrentPage(1);
+      const data = response.data;
+      setItemsLength(data.length);
+      setItems(data);
+      setItemsPerPage(data.slice(0,4));  // Display the first page of the rendered itemsPerpage
+      // Reset the counter for slicing pagination (handlePagination)
+      setItemsFirstCount(0);
+      setItemsLastCount(4);
+
+    } catch(error: unknown) {
+      if (axios.isAxiosError(error) && error.name !== 'AbortError') {
+        console.log(error);
+      } else {
+        console.error('Unexpected error:', error);
+      }
     }
-
-    setDataIsReady(true);
-    setDisablePaginationButton({nextBtn: false, prevBtn: false});
-    setCurrentPage(1);
-    const data = response.data;
-    setItemsLength(data.length);
-    setItems(data);
-    setItemsPerPage(data.slice(0,4));  // Display the first page of the rendered itemsPerpage
-    // Reset the counter for slicing pagination (handlePagination)
-    setItemsFirstCount(0);
-    setItemsLastCount(4);
-
-  }catch(err) {
-    console.log(err)
   }
-
- }
 
   useEffect(() => {
     showCart ? document.body.style.overflow = 'hidden' : document.body.style.overflow = '';
-  }, [showCart])
+  }, [showCart]);
 
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
 
     if(!dataIsReady) {
-      getAllProducts();
+      getAllProducts(signal);
       return;
     }
-    
+
     if(dataIsReady) {
       handlePagination();
       return;
     }
-    
-  },[itemsFirstCount,itemsLastCount, dataIsReady])
+
+    return () => {
+      controller.abort();
+    };
+
+  }, [itemsFirstCount, itemsLastCount, dataIsReady]);
 
   return (
     <>
@@ -207,8 +219,8 @@ const ProductsPage = () => {
         </div>
 
         <Categories
-          getProductsFromCategory={getProductsFromCategory}
-          getAllProducts={getAllProducts}
+          getProductsFromCategory={(categoryName) => getProductsFromCategory(categoryName, new AbortController().signal)}
+          getAllProducts={() => getAllProducts(new AbortController().signal)}
         />
 
         <div className="products-cards-container mt-3">
@@ -223,6 +235,7 @@ const ProductsPage = () => {
                 description={item.description}
                 image={item.image}
                 rating={item.rating.rate}
+                setCartItems={setCartItems}
               />
             ))}
         </div>

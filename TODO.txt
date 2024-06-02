@@ -1,10 +1,10 @@
 TODO:
--> Pag lagay ng fetch function sa categories buttons
--> products page design, nasa assets uing layout
--> fetch ang categories sa mga categories button
+-> Abort API call, pag bigla bigla nag lilipat ng category without finishing the call
+
 
 
 ENHANCEMENT:
+-> error custom modal sa mga catch ng api calls
 -> i useMemo ung sa pag click ng buttons sa i-try categories
 -> Add Loading sa pag Fetch ng mga items
 -> Yung pag display ng error sa catch ng fetch Api
@@ -15,4 +15,4 @@ johnd
 m38rmF$
 
 NAHINTO:
-Sa pagination
+Sa add to cart functionality
