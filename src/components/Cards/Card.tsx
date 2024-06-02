@@ -37,15 +37,17 @@ const Card = ({id, title, price, category, image, rating, setCartItems}: CardsTy
 
         try {
             const response = await BaseApi({token: context.session.token}).get(`/products/${id}`);
+            if(!response || !response.data || response.data === null) {
+              return alert('Display Error message Modal');
+            }
             console.log(response.data);
+            setCartItems((prev) => prev ? [...prev, response.data] : [response.data]);
         } catch(error) {
             console.log(error)
         } finally {
             setIsLoading(false);
         }
 
-
-        // setCartItems() -> Store base sa response na manggagaling sa API call
     }
 
     return (
@@ -73,9 +75,9 @@ const Card = ({id, title, price, category, image, rating, setCartItems}: CardsTy
             <p className="text-slate-800 text-md font-medium text-start underline w-full">
               ${price}
             </p>
-            <button className="bg-warning w-full flex justify-center items-center rounded-lg hover:bg-warninglight">
+            <button onClick={() => handleAddToCart(id)}  className="bg-warning w-full flex justify-center items-center rounded-lg hover:bg-warninglight">
               <TbShoppingCartPlus />
-              <p onClick={() => handleAddToCart(id)} className="text-xs mx-1 font-medium">
+              <p className="text-xs mx-1 font-medium">
                 Add to Cart
               </p>
             </button>

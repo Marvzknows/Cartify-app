@@ -1,9 +1,19 @@
-TODO:
--> Abort API call, pag bigla bigla nag lilipat ng category without finishing the call
-
+TODO: FOR CART FUNCTIONALITY
+-> Loading component for the following:
+        - for onclick ng cart dat mag load muna bago idisplay mga items,
+        - for changing categories
+        - onMount mismo ng app
+        - pag navigate sa pagination
+-> toast display pag nag success add to cart, set mo sa disable ibang button na add to cart 
+   pag hindi pa tapos yung API call nung naunang add to cart 
+-> Cart icon badge: display actual cart items count
+-> Add and Minus functionality for each items in the cart
+-> search bar functionality
+-> signup faeture
 
 
 ENHANCEMENT:
+-> yung cart, pag sa mobile hindi nakikita ng buo yung pinaka dulo
 -> error custom modal sa mga catch ng api calls
 -> i useMemo ung sa pag click ng buttons sa i-try categories
 -> Add Loading sa pag Fetch ng mga items

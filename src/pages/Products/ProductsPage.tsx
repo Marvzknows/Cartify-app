@@ -176,9 +176,14 @@ const ProductsPage = () => {
 
   return (
     <>
-      <Cart onClickCart={onClickCart} showCart={showCart} />
-      <PageLayout>
+      <Cart 
+        onClickCart={onClickCart} 
+        showCart={showCart} 
+        cartitems={cartitems}
+        setCartItems={setCartItems}
+      />
 
+      <PageLayout>
         <div className="flex justify-end gap-2 items-center">
           <InputField type="text" placeholder="Search" icon={<IoIosSearch />} />
           <div className="relative">

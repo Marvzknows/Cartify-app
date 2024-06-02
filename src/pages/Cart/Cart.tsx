@@ -1,13 +1,16 @@
 import { FaBagShopping } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 import CartCard from "./CartCard";
+import { CartItemsTypes } from "../../Types/CartItemsT";
 
 type CartTypes = {
     onClickCart: React.Dispatch<React.SetStateAction<boolean>>,
     showCart: boolean;
+    cartitems: CartItemsTypes[] | null;
+    setCartItems: React.Dispatch<React.SetStateAction<CartItemsTypes[] | null>>
 }
 
-const Cart = ({onClickCart, showCart}: CartTypes) => {
+const Cart = ({onClickCart, showCart, cartitems, setCartItems}: CartTypes) => {
 
     const closeCart = () => {
         onClickCart(false);
@@ -30,13 +33,18 @@ const Cart = ({onClickCart, showCart}: CartTypes) => {
             </div>
 
             <div className="overflow-auto">
-                <CartCard />
-                <CartCard />
-                <CartCard />
-                <CartCard />
-                <CartCard />
-                <CartCard />
-                <CartCard />
+                {cartitems && showCart && cartitems.map((item, i) => (
+                    <CartCard
+                        key={i}
+                        id={item.id}
+                        category={item.category}
+                        title={item.title}
+                        description={item.description}
+                        price={item.price}
+                        image={item.image}
+                        setCartItems={setCartItems}
+                    />
+                ))}
             </div>
 
           </div>
@@ -46,5 +54,3 @@ const Cart = ({onClickCart, showCart}: CartTypes) => {
 }
 
 export default Cart;
-
-{/* "https://fakestoreapi.com/img/81Zt42ioCgL._AC_SX679_.jpg" */}
