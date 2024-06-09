@@ -15,6 +15,7 @@ import { BaseApi } from "../../API/BaseApi";
 import Pagination from "../../components/Pagination/Pagination";
 import axios from 'axios';
 import { CartItemsTypes } from "../../Types/CartItemsT";
+import CardLoadingLayout from "../../components/CardLoadingLayout/CardLoadingLayout";
 
 type CardsType = {
   id: number,
@@ -36,6 +37,7 @@ const ProductsPage = () => {
   const [showCart, setShowCart] = useState(false);
   const [items, setItems] = useState<CardsType[] | []>([]); // OverAll items
   const [dataIsReady, setDataIsReady] = useState(false); // Counter for which Function to invoke in useeffect
+  const [isLoading, setIsLoading] = useState(false);
 
   const [itemsPerPage, setItemsPerPage] = useState<CardsType[] | []>([]);
   const [curentPage, setCurrentPage] = useState(1);
@@ -62,6 +64,7 @@ const ProductsPage = () => {
     if(!context?.session?.token) return;
 
     try {
+      setIsLoading(true);
       const response = await BaseApi({token: context.session.token, signal}).get('/products');
       if(response.data === null || !response.data) {
         return setItems([]);
@@ -72,6 +75,7 @@ const ProductsPage = () => {
       setCurrentPage(1);
       const data = response.data;
       setItemsLength(data.length);
+      setIsLoading(false);
       setItems(data);
       setItemsPerPage(data.slice(0,4)); // Display the first page of the rendered itemsPerpage
       // Reset the counter for slicing pagination (handlePagination);
@@ -125,6 +129,7 @@ const ProductsPage = () => {
     if(!context?.session?.token) return;
 
     try {
+      setIsLoading(true);
       const response = await BaseApi({token: context.session.token, signal}).get(`/products/category/${categoryName}`);
       if(response.data === null || !response.data) {
         return setItems([]);
@@ -133,6 +138,7 @@ const ProductsPage = () => {
       setDataIsReady(true);
       setDisablePaginationButton({nextBtn: false, prevBtn: false});
       setCurrentPage(1);
+      setIsLoading(false);
       const data = response.data;
       setItemsLength(data.length);
       setItems(data);
@@ -229,7 +235,11 @@ const ProductsPage = () => {
         />
 
         <div className="products-cards-container mt-3">
-          {itemsPerPage &&
+          {/* Loading Layout Component */}
+          {isLoading && <CardLoadingLayout />}
+
+          {/* Items Card Output */}
+          {itemsPerPage && !isLoading &&
             itemsPerPage.map((item) => (
               <Card
                 key={item.id}

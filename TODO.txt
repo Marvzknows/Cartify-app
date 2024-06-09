@@ -1,4 +1,5 @@
 TODO: FOR CART FUNCTIONALITY
+-> yung footer, hindi nasama sa pag adjust nung pagelayout na width
 -> Loading component for the following:
         - for onclick ng cart dat mag load muna bago idisplay mga items,
         - for changing categories
@@ -26,3 +27,4 @@ m38rmF$
 
 NAHINTO:
 Sa add to cart functionality
+ADD LOADING COMPONENT PAG MAG NEXT PAGE AT SA TUWING MAG CHCHANGE CATEGORIES
