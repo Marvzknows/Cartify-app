@@ -13,10 +13,12 @@ type CardsType = {
     description: string,
     image: string,
     rating: number,
-    setCartItems: React.Dispatch<React.SetStateAction<CartItemsTypes[] | null>>
+    setCartItems: React.Dispatch<React.SetStateAction<CartItemsTypes[] | null>>,
+    setShowToast: React.Dispatch<React.SetStateAction<boolean>>,
+    setToastMessage: React.Dispatch<React.SetStateAction<string>>
 }
 
-const Card = ({id, title, price, category, image, rating, setCartItems}: CardsType) => {
+const Card = ({id, title, price, category, image, rating, setCartItems, setShowToast, setToastMessage}: CardsType) => {
 
     const context = useContext(UserContext);
     const [isLoading, setIsLoading] = useState(false);
@@ -30,10 +32,13 @@ const Card = ({id, title, price, category, image, rating, setCartItems}: CardsTy
         return stars
     }
 
-    const handleAddToCart = async(id: number) => {
+    const handleAddToCart = async(id: number, category: string) => {
+        setToastMessage('');
         if(isLoading) return;
         if(!context?.session?.token) return;
         setIsLoading(true);
+        setShowToast(true);
+        setToastMessage(`A ${category} item has been added to you cart `);
 
         try {
             const response = await BaseApi({token: context.session.token}).get(`/products/${id}`);
@@ -75,7 +80,7 @@ const Card = ({id, title, price, category, image, rating, setCartItems}: CardsTy
             <p className="text-slate-800 text-md font-medium text-start underline w-full">
               ${price}
             </p>
-            <button onClick={() => handleAddToCart(id)}  className="bg-warning w-full flex justify-center items-center rounded-lg hover:bg-warninglight">
+            <button onClick={() => handleAddToCart(id, category)}  className="bg-warning w-full flex justify-center items-center rounded-lg hover:bg-warninglight">
               <TbShoppingCartPlus />
               <p className="text-xs mx-1 font-medium">
                 Add to Cart

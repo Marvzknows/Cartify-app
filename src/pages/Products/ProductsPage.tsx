@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { SetStateAction, useContext, useEffect, useState } from "react";
 import { UserContext } from "../../Context/UserContext";
 import PageLayout from "../../components/Layout/PageLayout";
 import InputField from "../../components/Input/InputField";
@@ -16,6 +16,7 @@ import Pagination from "../../components/Pagination/Pagination";
 import axios from 'axios';
 import { CartItemsTypes } from "../../Types/CartItemsT";
 import CardLoadingLayout from "../../components/CardLoadingLayout/CardLoadingLayout";
+import CartToast from "../../components/Toast/Toast";
 
 type CardsType = {
   id: number,
@@ -44,6 +45,8 @@ const ProductsPage = () => {
   const [itemsFirstCount, setItemsFirstCount] = useState(0);
   const [itemsLastCount, setItemsLastCount] = useState(4); // gmaitin sa pagination pag mag click ng page number or next page (by 4 lang ang items)
   const [itemsLength, setItemsLength] = useState(0); // gano karami overall yung data/items
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   const [cartitems, setCartItems] = useState<CartItemsTypes[] | null>(null); // carts item lists
 
@@ -190,6 +193,17 @@ const ProductsPage = () => {
       />
 
       <PageLayout>
+
+        {showToast && (
+          <CartToast 
+          children={toastMessage} 
+          variant={"success"} 
+          position={"center"} 
+          showToast={showToast}
+          isShowToast={setShowToast} 
+        />
+        )}
+
         <div className="flex justify-end gap-2 items-center">
           <InputField type="text" placeholder="Search" icon={<IoIosSearch />} />
           <div className="relative">
@@ -214,7 +228,7 @@ const ProductsPage = () => {
           <div className="border border-slate-400 rounded-3xl py-3 md:py-2"></div>
           <button className="relative p-3.5 overflow-hidden">
             <div className="absolute top-0 right-0 bg-danger font-semibold text-white rounded-full w-5 h-4 text-[10px] flex items-center justify-center">
-              10
+              {cartitems?.length ? cartitems.length : 0}
             </div>
             <TbShoppingCartPlus
               onClick={onClickCart}
@@ -251,6 +265,8 @@ const ProductsPage = () => {
                 image={item.image}
                 rating={item.rating.rate}
                 setCartItems={setCartItems}
+                setShowToast={setShowToast}
+                setToastMessage={setToastMessage}
               />
             ))}
         </div>
