@@ -32,7 +32,7 @@ const CartButton = (props: ButtonsType & HTMLAttributes<HTMLButtonElement>) => {
     ${btnVariant ?? 'bg-primary text-white px-3 py-2 text-xs font-medium text-center rounded-lg'}
     ${btnSize ?? 'text-sm'}
     ${otherProps}
-    flex justify-center items-center gap-1 hover:bg-successlight
+    flex justify-center items-center gap-1
     `}
     {...otherProps}
     >

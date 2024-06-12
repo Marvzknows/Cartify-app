@@ -1,18 +1,24 @@
-TODO:
--> Pag lagay ng fetch function sa categories buttons
--> products page design, nasa assets uing layout
--> fetch ang categories sa mga categories button
+TODO: FOR CART FUNCTIONALITY
+
+-> Add and Minus functionality for each items in the cart
+-> search bar functionality
+-> signup faeture
+-> pag mali credentials yung singning in.. button di bumabalik sa dati
+-> checkout functionality ( Mga Content inside ng Checkout Modal)
+        - Modal na mag eenter ng payment (number only, auto format into PHP)
+        - pag pinindot checkout ng walang laman cart dapat mag display errortoast
+        - summary ng items (image, quantity, item Title at total nung per item per quanity )
+        - Date today (Purchase Date)
 
 
 ENHANCEMENT:
--> i useMemo ung sa pag click ng buttons sa i-try categories
--> Add Loading sa pag Fetch ng mga items
+-> error custom modal sa mga catch ng api calls
 -> Yung pag display ng error sa catch ng fetch Api
--> use max with sa pagelayout para sa znoom out hindi nag stretch masyado
+
 ACC:
 
 johnd
 m38rmF$
 
-NAHINTO:
-Sa pagination
+NAHINTO: 
+

@@ -2,7 +2,8 @@ import axios, { AxiosInstance as Axios } from 'axios'
 
 type AxiosInstanceType = {
     token?: string,
-    params? : AxiosInstanceParamsType
+    params? : AxiosInstanceParamsType,
+    signal?: AbortSignal
 }
 
 type AxiosInstanceParamsType = {
@@ -26,7 +27,7 @@ export const AxiosInstance = (props:AxiosInstanceType): Axios => {
 
 export const BaseApi = (props:AxiosInstanceType): Axios => {
     
-    const { token, params } = props;
+    const { token, params, signal } = props;
 
     const instance = axios.create({
         baseURL: 'https://fakestoreapi.com',
@@ -35,7 +36,8 @@ export const BaseApi = (props:AxiosInstanceType): Axios => {
         },
         params: {
             limit: params?.limit // limit
-        }
+        },
+        signal: signal
     })
 
     return instance;
