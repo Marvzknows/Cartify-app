@@ -1,28 +1,24 @@
 TODO: FOR CART FUNCTIONALITY
--> Loading component for the following:
-        - for onclick ng cart dat mag load muna bago idisplay mga items,
-        - for changing categories
-        - onMount mismo ng app
-        - pag navigate sa pagination
--> toast display pag nag success add to cart, set mo sa disable ibang button na add to cart 
-   pag hindi pa tapos yung API call nung naunang add to cart 
--> Cart icon badge: display actual cart items count
+
 -> Add and Minus functionality for each items in the cart
 -> search bar functionality
 -> signup faeture
+-> pag mali credentials yung singning in.. button di bumabalik sa dati
+-> checkout functionality ( Mga Content inside ng Checkout Modal)
+        - Modal na mag eenter ng payment (number only, auto format into PHP)
+        - pag pinindot checkout ng walang laman cart dapat mag display errortoast
+        - summary ng items (image, quantity, item Title at total nung per item per quanity )
+        - Date today (Purchase Date)
 
 
 ENHANCEMENT:
--> yung cart, pag sa mobile hindi nakikita ng buo yung pinaka dulo
 -> error custom modal sa mga catch ng api calls
--> i useMemo ung sa pag click ng buttons sa i-try categories
--> Add Loading sa pag Fetch ng mga items
 -> Yung pag display ng error sa catch ng fetch Api
--> use max with sa pagelayout para sa znoom out hindi nag stretch masyado
+
 ACC:
 
 johnd
 m38rmF$
 
-NAHINTO:
-Sa add to cart functionality
+NAHINTO: 
+

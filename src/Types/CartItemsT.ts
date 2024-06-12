@@ -5,5 +5,8 @@ export type CartItemsTypes = {
     description: string,
     price: number,
     image: string,
-    setCartItems: React.Dispatch<React.SetStateAction<CartItemsTypes[] | null>>
+    quantity: number,
+    setCartItems: React.Dispatch<React.SetStateAction<CartItemsTypes[] | null>>,
+    handleAddQuantity: (id: number) => void,
+    handleDecreaseQuantity: (id: number) => void
 }

@@ -28,10 +28,6 @@ const CartToast = (props:CartToastTypes) => {
                 isShowToast(false);
             }, 3000);
         }
-
-        // return () => {
-        //     isShowToast(false);
-        // }
     },[showToast])
 
     const toastPostionObj:ToastPositioType  = {

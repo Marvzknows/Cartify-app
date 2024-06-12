@@ -1,4 +1,4 @@
-import { SetStateAction, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../Context/UserContext";
 import PageLayout from "../../components/Layout/PageLayout";
 import InputField from "../../components/Input/InputField";
@@ -45,8 +45,11 @@ const ProductsPage = () => {
   const [itemsFirstCount, setItemsFirstCount] = useState(0);
   const [itemsLastCount, setItemsLastCount] = useState(4); // gmaitin sa pagination pag mag click ng page number or next page (by 4 lang ang items)
   const [itemsLength, setItemsLength] = useState(0); // gano karami overall yung data/items
+  const [isChangingQuantity, setIsChangingQuantity] = useState(false);
+
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [showErrorToast, setShowErrorToast] = useState(false);
 
   const [cartitems, setCartItems] = useState<CartItemsTypes[] | null>(null); // carts item lists
 
@@ -185,23 +188,33 @@ const ProductsPage = () => {
 
   return (
     <>
-      <Cart 
-        onClickCart={onClickCart} 
-        showCart={showCart} 
+      <Cart
+        onClickCart={onClickCart}
+        showCart={showCart}
         cartitems={cartitems}
         setCartItems={setCartItems}
+        isChangingQuantity={isChangingQuantity}
+        setIsChangingQuantity={setIsChangingQuantity}
       />
 
       <PageLayout>
-
         {showToast && (
-          <CartToast 
-          children={toastMessage} 
-          variant={"success"} 
-          position={"center"} 
-          showToast={showToast}
-          isShowToast={setShowToast} 
-        />
+          <CartToast
+            children={toastMessage}
+            variant={"success"}
+            position={"center"}
+            showToast={showToast}
+            isShowToast={setShowToast}
+          />
+        )}
+        {showErrorToast && (
+          <CartToast
+            children={"Item already added to your cart"}
+            variant={"danger"}
+            position={"topleft"}
+            showToast={showErrorToast}
+            isShowToast={setShowErrorToast}
+          />
         )}
 
         <div className="flex justify-end gap-2 items-center">
@@ -244,7 +257,9 @@ const ProductsPage = () => {
         </div>
 
         <Categories
-          getProductsFromCategory={(categoryName) => getProductsFromCategory(categoryName, new AbortController().signal)}
+          getProductsFromCategory={(categoryName) =>
+            getProductsFromCategory(categoryName, new AbortController().signal)
+          }
           getAllProducts={() => getAllProducts(new AbortController().signal)}
         />
 
@@ -253,7 +268,8 @@ const ProductsPage = () => {
           {isLoading && <CardLoadingLayout />}
 
           {/* Items Card Output */}
-          {itemsPerPage && !isLoading &&
+          {itemsPerPage &&
+            !isLoading &&
             itemsPerPage.map((item) => (
               <Card
                 key={item.id}
@@ -264,9 +280,11 @@ const ProductsPage = () => {
                 description={item.description}
                 image={item.image}
                 rating={item.rating.rate}
+                cartitems={cartitems}
                 setCartItems={setCartItems}
                 setShowToast={setShowToast}
                 setToastMessage={setToastMessage}
+                setShowErrorToast={setShowErrorToast}
               />
             ))}
         </div>
