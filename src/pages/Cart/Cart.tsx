@@ -13,9 +13,10 @@ type CartTypes = {
     setCartItems: React.Dispatch<React.SetStateAction<CartItemsTypes[] | null>>
     isChangingQuantity: boolean,
     setIsChangingQuantity: React.Dispatch<React.SetStateAction<boolean>>,
+    setShowModal: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
-const Cart = ({onClickCart, showCart, cartitems, setCartItems}: CartTypes) => {
+const Cart = ({onClickCart, showCart, cartitems, setCartItems, setShowModal}: CartTypes) => {
 
     const closeCart = () => {
         onClickCart(false);
@@ -52,7 +53,10 @@ const Cart = ({onClickCart, showCart, cartitems, setCartItems}: CartTypes) => {
     },[cartitems])
 
     const handleCheckout = () => {
+      if(!cartitems?.length) return;
       console.log(cartitems);
+      setShowModal(true);
+      onClickCart(false);
     }
 
     return (
@@ -114,7 +118,7 @@ const Cart = ({onClickCart, showCart, cartitems, setCartItems}: CartTypes) => {
               <button onClick={HandleClearCart} className="bg bg-danger text-white text-sm py-2 w-full rounded  hover:bg-red-600">
                 Clear All
               </button>
-              <button onClick={handleCheckout} className="bg bg-primary text-white text-sm py-2 w-full rounded  hover:bg-blue-600">
+              <button onClick={handleCheckout} disabled={!cartitems?.length} className="bg bg-primary text-white text-sm py-2 w-full rounded hover:bg-blue-60 disabled:bg-primarylight disabled:cursor-not-allowed">
                 Checkout
               </button>
             </div>

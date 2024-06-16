@@ -1,6 +1,5 @@
 TODO: FOR CART FUNCTIONALITY
 
--> Add and Minus functionality for each items in the cart
 -> search bar functionality
 -> signup faeture
 -> pag mali credentials yung singning in.. button di bumabalik sa dati
@@ -20,5 +19,5 @@ ACC:
 johnd
 m38rmF$
 
-NAHINTO: 
+NAHINTO: PAG DISPLAY NG DATA FROM CART TO CHECKOUT MODAL
 
