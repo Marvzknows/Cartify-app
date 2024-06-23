@@ -1,4 +1,4 @@
-import { SetStateAction, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../Context/UserContext";
 import PageLayout from "../../components/Layout/PageLayout";
 import InputField from "../../components/Input/InputField";
@@ -223,6 +223,7 @@ const ProductsPage = () => {
 
         {showModal && 
           <CheckoutModal 
+            cartitems={cartitems}
             setShowModal={setShowModal} 
           />}
 
