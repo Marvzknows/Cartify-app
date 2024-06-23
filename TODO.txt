@@ -1,14 +1,17 @@
 TODO: FOR CART FUNCTIONALITY
 
--> Add and Minus functionality for each items in the cart
 -> search bar functionality
+        - Sa search functionality dapat pag nag onchange matic redirect sa All categories tas doon mag
+        mag didisplay yung sinearch 
+        - Or mag display nlang ng new Component under ng categories
 -> signup faeture
 -> pag mali credentials yung singning in.. button di bumabalik sa dati
 -> checkout functionality ( Mga Content inside ng Checkout Modal)
         - Modal na mag eenter ng payment (number only, auto format into PHP)
         - pag pinindot checkout ng walang laman cart dapat mag display errortoast
         - summary ng items (image, quantity, item Title at total nung per item per quanity )
-        - Date today (Purchase Date)
+        - pagpindot ng checkout success modal nalng
+        
 
 
 ENHANCEMENT:
@@ -20,5 +23,5 @@ ACC:
 johnd
 m38rmF$
 
-NAHINTO: 
+NAHINTO: PAG DISPLAY NG DATA FROM CART TO CHECKOUT MODAL
 

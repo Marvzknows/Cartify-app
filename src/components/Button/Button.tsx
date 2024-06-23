@@ -33,6 +33,7 @@ const CartButton = (props: ButtonsType & HTMLAttributes<HTMLButtonElement>) => {
     ${btnSize ?? 'text-sm'}
     ${otherProps}
     flex justify-center items-center gap-1
+    hover:opacity-80
     `}
     {...otherProps}
     >

@@ -17,6 +17,7 @@ import axios from 'axios';
 import { CartItemsTypes } from "../../Types/CartItemsT";
 import CardLoadingLayout from "../../components/CardLoadingLayout/CardLoadingLayout";
 import CartToast from "../../components/Toast/Toast";
+import CheckoutModal from "../../components/Modals/CheckoutModal";
 
 type CardsType = {
   id: number,
@@ -50,6 +51,8 @@ const ProductsPage = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [showErrorToast, setShowErrorToast] = useState(false);
+
+  const [showModal, setShowModal] = useState(false);
 
   const [cartitems, setCartItems] = useState<CartItemsTypes[] | null>(null); // carts item lists
 
@@ -163,8 +166,8 @@ const ProductsPage = () => {
   }
 
   useEffect(() => {
-    showCart ? document.body.style.overflow = 'hidden' : document.body.style.overflow = '';
-  }, [showCart]);
+    showCart || showModal ? document.body.style.overflow = 'hidden' : document.body.style.overflow = '';
+  }, [showCart, showModal]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -195,6 +198,7 @@ const ProductsPage = () => {
         setCartItems={setCartItems}
         isChangingQuantity={isChangingQuantity}
         setIsChangingQuantity={setIsChangingQuantity}
+        setShowModal={setShowModal}
       />
 
       <PageLayout>
@@ -216,6 +220,12 @@ const ProductsPage = () => {
             isShowToast={setShowErrorToast}
           />
         )}
+
+        {showModal && 
+          <CheckoutModal 
+            cartitems={cartitems}
+            setShowModal={setShowModal} 
+          />}
 
         <div className="flex justify-end gap-2 items-center">
           <InputField type="text" placeholder="Search" icon={<IoIosSearch />} />
