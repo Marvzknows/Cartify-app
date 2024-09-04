@@ -32,6 +32,8 @@ type CardsType = {
   }
 }
 
+type SearchedItems = CardsType[];
+
 const ProductsPage = () => {
   const context = useContext(UserContext);
 
@@ -40,6 +42,10 @@ const ProductsPage = () => {
   const [items, setItems] = useState<CardsType[] | []>([]); // OverAll items
   const [dataIsReady, setDataIsReady] = useState(false); // Counter for which Function to invoke in useeffect
   const [isLoading, setIsLoading] = useState(false);
+  // Search
+  const [searchValue, setSearchValue] = useState('');
+  const [searchedItems, setSearchedItems] = useState<CardsType[] | null>(null);
+  const [searchIsLoading, setSearchIsLoading] = useState(false);
 
   const [itemsPerPage, setItemsPerPage] = useState<CardsType[] | []>([]);
   const [curentPage, setCurrentPage] = useState(1);
@@ -47,7 +53,7 @@ const ProductsPage = () => {
   const [itemsLastCount, setItemsLastCount] = useState(4); // gmaitin sa pagination pag mag click ng page number or next page (by 4 lang ang items)
   const [itemsLength, setItemsLength] = useState(0); // gano karami overall yung data/items
   const [isChangingQuantity, setIsChangingQuantity] = useState(false);
-
+  // Toasts & Modals
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [showErrorToast, setShowErrorToast] = useState(false);
@@ -71,7 +77,7 @@ const ProductsPage = () => {
 
   const getAllProducts = async (signal: AbortSignal) => {
     if(!context?.session?.token) return;
-
+    setSearchedItems(null);
     try {
       setIsLoading(true);
       const response = await BaseApi({token: context.session.token, signal}).get('/products');
@@ -136,7 +142,7 @@ const ProductsPage = () => {
 
   const getProductsFromCategory = async (categoryName: string, signal: AbortSignal) => {
     if(!context?.session?.token) return;
-
+    setSearchedItems(null);
     try {
       setIsLoading(true);
       const response = await BaseApi({token: context.session.token, signal}).get(`/products/category/${categoryName}`);
@@ -165,6 +171,32 @@ const ProductsPage = () => {
     }
   }
 
+  const getSearchedItem = async (itemName: string) => {
+    if (!context || !context?.session?.token) return;
+
+    try {
+      const response = await BaseApi({ token: context.session.token }).get(
+        `/products/`
+      );
+      if (response.data === null || !response.data) {
+        return alert("No data found");
+      }
+      const items = response.data as SearchedItems;
+      // console.log(items);
+      const getItem = items.filter((item) => item.title.toLowerCase().includes(itemName.toLowerCase())); 
+      setSearchedItems(getItem);
+      
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.name !== "AbortError") {
+        console.log(error);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+    } finally {
+      setSearchIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     showCart || showModal ? document.body.style.overflow = 'hidden' : document.body.style.overflow = '';
   }, [showCart, showModal]);
@@ -188,6 +220,24 @@ const ProductsPage = () => {
     };
 
   }, [itemsFirstCount, itemsLastCount, dataIsReady]);
+
+  useEffect(() => {
+    if(!searchValue.trim() || searchValue.trim() === ''){
+      return setSearchedItems(null);
+    } 
+    setSearchIsLoading(true);
+    const timeOut = setTimeout(() => {
+      getSearchedItem(searchValue);
+    }, 2000);
+
+    return (() => {
+      clearTimeout(timeOut);
+    })
+  },[searchValue])
+
+  const onChangeSearchBar = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value)
+  }
 
   return (
     <>
@@ -221,14 +271,44 @@ const ProductsPage = () => {
           />
         )}
 
-        {showModal && 
-          <CheckoutModal 
-            cartitems={cartitems}
-            setShowModal={setShowModal} 
-          />}
+        {showModal && (
+          <CheckoutModal cartitems={cartitems} setShowModal={setShowModal} />
+        )}
 
         <div className="flex justify-end gap-2 items-center">
-          <InputField type="text" placeholder="Search" icon={<IoIosSearch />} />
+          <div className="relative">
+            <InputField
+              onChange={onChangeSearchBar}
+              type="text"
+              placeholder="Search"
+              value={searchValue}
+              icon={<IoIosSearch />}
+            />
+            <div className="mt-1 absolute bg-white rounded w-full shadow-2xl">
+              {searchIsLoading && (
+                <ul>
+                  <li className="text-xs px-2.5 py-1 hover:bg-slate-200">Loading...</li>
+                </ul>
+              )}
+              <ul>
+                {!searchIsLoading && searchedItems &&
+                  searchValue.length !== 0 &&
+                  searchedItems.map((item) => {
+                    return (
+                      <li className="text-xs px-2.5 py-1 hover:bg-slate-200 flex">
+                        {item.title}
+                        {/* <Button children={'Add to Card'} size={"xs"} /> */}
+                      </li>
+                    );
+                  })}
+
+                {/* {searchedItems?.length === 0 &&
+                  searchValue && (<li className="text-xs">No items Found</li>)
+                 } */}
+              </ul>
+            </div>
+          </div>
+
           <div className="relative">
             <img
               onClick={handleProfileDropdown}
