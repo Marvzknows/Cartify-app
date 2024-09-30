@@ -4,8 +4,6 @@ import { useCookies } from "react-cookie";
 
 type UserContextType = {
     session?: SessionType,
-    isLoggedin: boolean,
-    setIsLoggedIn:React.Dispatch<React.SetStateAction<boolean>>,
     saveSession: (userCredential: Session) => void,
     removeSession: () => void
 }
@@ -19,8 +17,6 @@ type SessionType = {
 }
 
 export const UserContext = createContext<UserContextType | null>({
-    isLoggedin: false,
-    setIsLoggedIn: () => {},
     saveSession: () => {},
     removeSession: () => {}
 })
@@ -28,7 +24,6 @@ export const UserContext = createContext<UserContextType | null>({
 const UserProvider = ({ children }: UserProviderType) => {
 
     const [cookies, setCookie, removeCookie] = useCookies(['session', 'isLoggedIn']);
-    const [isLoggedin, setIsLoggedIn] = useState(false);
 
     const saveSession = (userCredential: Session) => {
         setCookie('isLoggedIn', true);
@@ -36,7 +31,6 @@ const UserProvider = ({ children }: UserProviderType) => {
     };
 
     const removeSession = () => {
-        removeCookie('isLoggedIn');
         removeCookie('session');
     }
 
@@ -44,8 +38,6 @@ const UserProvider = ({ children }: UserProviderType) => {
         <UserContext.Provider
         value={{
             session: cookies.session,
-            isLoggedin,
-            setIsLoggedIn,
             saveSession,
             removeSession
         }}

@@ -3,7 +3,7 @@ import { ButtonSizeType, ButtonVariantType, ButtonsType } from "./ButtonT";
 
 const CartButton = (props: ButtonsType & HTMLAttributes<HTMLButtonElement>) => {
 
-  const { bgColor, children, icon, size, ...otherProps } = props;
+  const { bgColor, children, icon, size, disabled, ...otherProps } = props;
   const defaultBtn = 'bg-primary text-white px-3 py-2 text-xs font-medium text-center rounded-lg'
 
   const variantObj = {
@@ -34,7 +34,9 @@ const CartButton = (props: ButtonsType & HTMLAttributes<HTMLButtonElement>) => {
     ${otherProps}
     flex justify-center items-center gap-1
     hover:opacity-80
+    disabled:bg-slate-300
     `}
+    disabled={disabled}
     {...otherProps}
     >
       {icon}

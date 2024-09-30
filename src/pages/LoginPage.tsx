@@ -50,24 +50,30 @@ const LoginPage = () => {
       setToastMessage('Invalid Credentials');
       return;
     }
-    
-    try{
-      setIsLoading(true);
-      const response = await AxiosInstance({}).post('/auth/login',loginCredentials);
-      setIsLoading(false);
-      if(response.status && response.status === 200) {
+
+    setIsLoading(true);
+
+    try {
+      const response = await AxiosInstance({}).post(
+        "/auth/login",
+        loginCredentials
+      );
+      if (response.status && response.status === 200) {
+        setIsLoading(false);
         context?.saveSession(response.data);
-        context?.setIsLoggedIn(true);
-        navigate('/products');
+        navigate("/products");
         return;
       }
-      
-    }catch(er) {
+
+      setIsLoading(false);
+    } catch (er) {
       const error = er as Error;
-      if(error) {
+      if (error) {
         setShowToast(true);
-        setToastMessage('Account not found');
+        setToastMessage("Account not found");
       }
+    } finally {
+      setIsLoading(false);
     }
 
   }

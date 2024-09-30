@@ -5,6 +5,7 @@ import { ReactNode } from "react"
     bgColor?: ButtonVariantType,
     icon?: ReactNode,
     size: ButtonSizeType,
+    disabled: boolean
 }
 
 export type ButtonVariantType = "primary" | "secondary" | "success" | "danger" | "warning";

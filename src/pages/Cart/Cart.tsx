@@ -54,7 +54,6 @@ const Cart = ({onClickCart, showCart, cartitems, setCartItems, setShowModal}: Ca
 
     const handleCheckout = () => {
       if(!cartitems?.length) return;
-      console.log(cartitems);
       setShowModal(true);
       onClickCart(false);
     }

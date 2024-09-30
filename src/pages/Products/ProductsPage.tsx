@@ -182,7 +182,6 @@ const ProductsPage = () => {
         return alert("No data found");
       }
       const items = response.data as SearchedItems;
-      // console.log(items);
       const getItem = items.filter((item) => item.title.toLowerCase().includes(itemName.toLowerCase())); 
       setSearchedItems(getItem);
       
@@ -272,7 +271,7 @@ const ProductsPage = () => {
         )}
 
         {showModal && (
-          <CheckoutModal cartitems={cartitems} setShowModal={setShowModal} />
+          <CheckoutModal cartitems={cartitems} setShowModal={setShowModal} setCartItems={setCartItems} />
         )}
 
         <div className="flex justify-end gap-2 items-center">

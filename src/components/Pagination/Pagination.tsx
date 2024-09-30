@@ -21,7 +21,6 @@ const Pagination = (props: PaginationType) => {
     const { nextPage, prevPage, itemsLength, disablePaginationButton, curentPage, setDisablePaginationButton } = props;
 
     const memoizePageLength = useMemo(() => {
-        // console.log('Re rendered');
         return Math.ceil(itemsLength / 4);
     }, [itemsLength])
 
