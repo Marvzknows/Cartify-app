@@ -122,7 +122,7 @@ const LoginPage = () => {
               name="password"
             />
           </div>
-          <CartButton bgColor="success" size="xs">
+          <CartButton disabled={isloading} bgColor="success" size="xs">
             {isloading ? 'Signing in...' : 'Sign in'}
           </CartButton>
         </form>
